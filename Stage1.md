@@ -11,7 +11,6 @@ The team agreed on clear collaboration and communication strategies to ensure sm
 
 ## Team Members and Roles
 
-## Team Members and Roles
 
 | Member | Background / Major | Role | Contribution |
 |------|------|------|------|
