@@ -13,7 +13,7 @@ The team agreed on clear collaboration and communication strategies to ensure sm
 
 | Member | Major | Role | Responsibilities |
 |------|------|------|------|
-| Sara | Information Technology | Project Manager / Backend Support | Coordinates the team, monitors progress, and contributes to system architecture and backend planning |
+| Sara | Information Technology | Project Manager & Backend Support | Coordinates the team, monitors progress, and contributes to system architecture and backend planning |
 | Roya | Finance | Research & Business Analysis | Analyzes user needs, evaluates project feasibility, and studies the potential impact of the platform |
 | Ghalia | Cybersecurity | Security & Backend Support | Focuses on system security, authentication, and protecting user data |
 | Rateel | — | Frontend & Documentation | Supports user interface design and organizes project documentation |
