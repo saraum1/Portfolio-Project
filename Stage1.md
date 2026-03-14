@@ -1,5 +1,5 @@
 # Stage 1 Report
-## Project: Ammar Platform (عمار)
+## Project: Ammar Platform (عمار) 🏗️
 
 ---
 
@@ -11,12 +11,15 @@ The team agreed on clear collaboration and communication strategies to ensure sm
 
 ## Team Members and Roles
 
-| Member | Major | Role | Responsibilities |
+## Team Members and Roles
+
+| Member | Background / Major | Role | Contribution |
 |------|------|------|------|
-| Sara | Information Technology | Project Manager & Backend Support | Coordinates the team, monitors progress, and contributes to system architecture and backend planning |
-| Roya | Finance | Research & Business Analysis | Analyzes user needs, evaluates project feasibility, and studies the potential impact of the platform |
-| Ghalia | Cybersecurity | Security & Backend Support | Focuses on system security, authentication, and protecting user data |
-| Rateel | — | Frontend & Documentation | Supports user interface design and organizes project documentation |
+| Sara | Information Technology | Frontend Development | Responsible for designing and developing the user interface and implementing frontend components of the platform. |
+| Roya | Finance | Research & Business Analysis | Analyzes user needs and studies the potential value and feasibility of the platform. |
+| Ghalyah | Cybersecurity | Security & Backend Support | Focuses on authentication mechanisms, system security, and protecting user data. |
+| Rateel | Information Systems | Documentation & System Support | Contributes to organizing project documentation and supporting system planning. |
+
 
 ## Collaboration Strategy
 
