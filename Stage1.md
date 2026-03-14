@@ -23,7 +23,6 @@ The team agreed on clear collaboration and communication strategies to ensure sm
 To ensure effective teamwork, the team follows several collaboration practices:
 
 - Regular meetings to discuss project progress
-- Shared documents to track ideas and development stages
 - Clear communication between team members
 - Task distribution based on each member’s skills and expertise
 
