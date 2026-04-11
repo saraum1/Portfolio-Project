@@ -93,10 +93,10 @@ To create a centralized digital platform that simplifies how users find trusted 
 
 **Table 4: High-Level Plan**
 
-## Figure 1: High-Level Gantt Chart
+
 
 <p align="center">
   <img src="assets/High-Level.png" width="700"/>
 </p>
 
-## Figure 1: High-Level Gantt Chart
+**Figure 1: High-Level Gantt Chart**
