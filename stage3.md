@@ -204,8 +204,10 @@ The system supports four main user types:
 | Notification Service| Resend API       |
 | Invoice Generator   | Backend Module   |
 | Version Control     | Git + GitHub     |
-| Diagrams            | Mermaid          | 
+| Diagrams            | Mermaid          |
 
+ 
+```mermaid
 flowchart LR
     Client[Client User]
     Company[Company User]
@@ -231,3 +233,4 @@ flowchart LR
     BE --> Invoice
 
     Notify --> Client
+``` 
