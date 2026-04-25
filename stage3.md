@@ -905,3 +905,7 @@ The project will use two environments: staging and production.
 6. The system is deployed to staging for testing.  
 7. If everything works correctly in staging, the code is merged into the main branch.  
 8. The system is deployed to production.  
+
+## Figma link 
+User interface :
+https://www.figma.com/design/CnbGUrEngplmlpdRHIIER6/Untitled?node-id=0-1&t=T5S1GwCZeFMke3l7-1
