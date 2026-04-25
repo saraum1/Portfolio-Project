@@ -212,13 +212,13 @@ flowchart LR
     Client[Client User]
     Company[Company User]
 
-    FE[Front-End (React)]
-    BE[Back-End API (Node.js + Express)]
+    FE[Front-End React]
+    BE[Back-End API Node.js Express]
 
     DB[(PostgreSQL Database)]
-    Auth[Authentication (JWT)]
-    Storage[File Storage (Supabase Storage)]
-    Notify[Notification Service (Resend API)]
+    Auth[Authentication JWT]
+    Storage[File Storage Supabase]
+    Notify[Notification Service Resend]
     Invoice[Invoice Generator]
 
     Client --> FE
@@ -232,6 +232,4 @@ flowchart LR
     BE --> Notify
     BE --> Invoice
 
-    Notify --> Client
-```
- 
+    Notify --> Client 
