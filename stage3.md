@@ -286,3 +286,262 @@ flowchart LR
 
 ## Class Diagram
 
+
+```mermaid
+classDiagram
+
+class User {
+  +int userId
+  +string name
+  +string email
+  +string passwordHash
+  +string role
+}
+
+class Client {
+  +int clientId
+  +string phoneNumber
+  +string address
+}
+
+class Company {
+  +int companyId
+  +string companyName
+  +string ownerName
+  +string commercialRegistration
+  +string vatNumber
+  +string establishmentNumber
+  +string description
+  +string companyType
+}
+
+class Service {
+  +int serviceId
+  +string title
+  +string description
+  +string priceRange
+}
+
+class Product {
+  +int productId
+  +string name
+  +string description
+  +float price
+  +int stockQuantity
+}
+
+class Booking {
+  +int bookingId
+  +date appointmentDate
+  +string status
+}
+
+class Project {
+  +int projectId
+  +string status
+}
+
+class ProjectUpdate {
+  +int updateId
+  +string comment
+  +string imageUrl
+}
+
+class Cart {
+  +int cartId
+}
+
+class Order {
+  +int orderId
+  +string status
+}
+
+class OrderItem {
+  +int orderItemId
+  +int quantity
+  +float unitPrice
+}
+
+class Invoice {
+  +int invoiceId
+  +float totalAmount
+}
+
+class Review {
+  +int reviewId
+  +int rating
+  +string comment
+}
+
+class NotificationService {
+  +sendBookingConfirmation()
+  +sendOrderConfirmation()
+  +sendInvoiceEmail()
+}
+
+class FileStorageService {
+  +uploadImage()
+  +getImageUrl()
+}
+
+User <|-- Client
+User <|-- Company
+
+Company "1" --> "0..*" Service : offers
+Company "1" --> "0..*" Product : sells
+
+Client "1" --> "0..*" Booking : makes
+Service "1" --> "0..*" Booking : bookedFor
+
+Booking "1" --> "0..1" Project : creates
+Project "1" --> "0..*" ProjectUpdate : has
+
+Client "1" --> "1" Cart : owns
+Cart "1" --> "0..*" OrderItem : contains
+Product "1" --> "0..*" OrderItem : usedIn
+
+Client "1" --> "0..*" Order : places
+Order "1" --> "1..*" OrderItem : includes
+Order "1" --> "1" Invoice : generates
+
+Client "1" --> "0..*" Review : writes
+Company "1" --> "0..*" Review : receives
+
+Booking ..> NotificationService : triggersEmail
+Order ..> NotificationService : triggersEmail
+Invoice ..> NotificationService : sendsInvoice
+ProjectUpdate ..> FileStorageService : storesImage
+```
+
+```mermaid
+erDiagram
+
+USERS {
+  int user_id PK
+  string name
+  string email
+  string password_hash
+  string role
+}
+
+CLIENTS {
+  int client_id PK
+  int user_id FK
+  string phone_number
+  string address
+}
+
+COMPANIES {
+  int company_id PK
+  int user_id FK
+  string company_name
+  string owner_name
+  string commercial_registration
+  string vat_number
+  string establishment_number
+  string description
+  string company_type
+}
+
+SERVICES {
+  int service_id PK
+  int company_id FK
+  string title
+  string description
+  string price_range
+}
+
+PRODUCTS {
+  int product_id PK
+  int company_id FK
+  string name
+  string description
+  float price
+  int stock_quantity
+}
+
+BOOKINGS {
+  int booking_id PK
+  int client_id FK
+  int service_id FK
+  date appointment_date
+  string status
+}
+
+PROJECTS {
+  int project_id PK
+  int booking_id FK
+  string status
+}
+
+PROJECT_UPDATES {
+  int update_id PK
+  int project_id FK
+  string comment
+  string image_url
+}
+
+CARTS {
+  int cart_id PK
+  int client_id FK
+}
+
+CART_ITEMS {
+  int cart_item_id PK
+  int cart_id FK
+  int product_id FK
+  int quantity
+}
+
+ORDERS {
+  int order_id PK
+  int client_id FK
+  string status
+}
+
+ORDER_ITEMS {
+  int order_item_id PK
+  int order_id FK
+  int product_id FK
+  int quantity
+  float unit_price
+}
+
+INVOICES {
+  int invoice_id PK
+  int order_id FK
+  float total_amount
+}
+
+REVIEWS {
+  int review_id PK
+  int client_id FK
+  int company_id FK
+  int rating
+  string comment
+}
+
+USERS ||--o| CLIENTS : has
+USERS ||--o| COMPANIES : has
+
+COMPANIES ||--o{ SERVICES : offers
+COMPANIES ||--o{ PRODUCTS : sells
+
+CLIENTS ||--o{ BOOKINGS : makes
+SERVICES ||--o{ BOOKINGS : booked_for
+
+BOOKINGS ||--o| PROJECTS : creates
+PROJECTS ||--o{ PROJECT_UPDATES : has
+
+CLIENTS ||--|| CARTS : owns
+CARTS ||--o{ CART_ITEMS : contains
+PRODUCTS ||--o{ CART_ITEMS : added_to
+
+CLIENTS ||--o{ ORDERS : places
+ORDERS ||--o{ ORDER_ITEMS : includes
+PRODUCTS ||--o{ ORDER_ITEMS : ordered_in
+ORDERS ||--|| INVOICES : generates
+
+CLIENTS ||--o{ REVIEWS : writes
+COMPANIES ||--o{ REVIEWS : receives
+```
