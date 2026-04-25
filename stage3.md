@@ -545,3 +545,363 @@ ORDERS ||--|| INVOICES : generates
 CLIENTS ||--o{ REVIEWS : writes
 COMPANIES ||--o{ REVIEWS : receives
 ```
+
+## Sequence Diagrams
+
+### 1. Client Login
+
+```mermaid
+sequenceDiagram
+    actor Client
+    participant FE as Front-End
+    participant BE as Back-End API
+    participant DB as Database
+
+    Client->>FE: Enter email and password
+    FE->>BE: Send login request
+    BE->>DB: Validate user credentials
+    DB-->>BE: Return user data
+    BE-->>FE: Return authentication token
+    FE-->>Client: Redirect to home page
+```
+```mermaid
+sequenceDiagram
+    actor Client
+    participant FE as Front-End
+    participant BE as Back-End API
+    participant DB as Database
+    participant Notify as Notification Service
+    actor Company
+
+    Client->>FE: Select company service and appointment time
+    FE->>BE: Submit booking request
+    BE->>DB: Save booking with Pending status
+    DB-->>BE: Booking saved
+    BE-->>Company: Notify company about new booking
+
+    Company->>FE: Accept booking
+    FE->>BE: Send acceptance response
+    BE->>DB: Update booking status to Accepted
+    BE->>DB: Create project record
+    BE->>Notify: Send booking confirmation email
+    Notify-->>Client: Booking confirmation email
+    BE-->>FE: Return booking confirmation
+    FE-->>Client: Display confirmation message
+```
+
+```mermaid
+sequenceDiagram
+    actor Client
+    participant FE as Front-End
+    participant BE as Back-End API
+    participant DB as Database
+    participant Invoice as Invoice Generator
+    participant Notify as Notification Service
+    actor Supplier as Material Supplier
+
+    Client->>FE: Browse materials
+    Client->>FE: Add products to cart
+    FE->>BE: Save cart items
+    BE->>DB: Store cart items
+    DB-->>BE: Cart updated
+
+    Client->>FE: Place order
+    FE->>BE: Submit order
+    BE->>DB: Create order and order items
+    DB-->>BE: Order saved
+
+    BE->>Invoice: Generate invoice
+    Invoice->>DB: Save invoice record
+    DB-->>Invoice: Invoice saved
+
+    BE-->>Supplier: Notify supplier about new order
+    BE->>Notify: Send order confirmation and invoice email
+    Notify-->>Client: Order confirmation and invoice email
+
+    BE-->>FE: Return order confirmation
+    FE-->>Client: Display order confirmation
+```
+
+
+# External APIs  
+# Internal API Endpoints  
+
+## 1. Authentication APIs  
+## 2. User Account APIs  
+
+### External API Purpose
+
+Supabase Storage API Used to upload and store project progress images and documents.  
+Resend API Used to send booking confirmations, order confirmations, password reset emails, and invoices.  
+JWT Authentication Used to secure login sessions and protect private endpoints.  
+
+---
+
+### Authentication APIs
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/auth/register | POST | JSON: name, email, password, role | JSON: created user data |
+| /api/auth/login | POST | JSON: email, password | JSON: token, user role |
+| /api/auth/logout | POST | Header: token | JSON: success message |
+| /api/auth/reset-password | POST | JSON: email | JSON: password reset message |
+| /api/auth/update-password | PUT | JSON: newPassword | JSON: success message |
+
+---
+
+### User Account APIs
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/users/me | GET | Header: token | JSON: current user profile |
+| /api/users/me | PUT | JSON: name, email, phone | JSON: updated user data |
+| /api/users/me | DELETE | Header: token | JSON: account deleted message |
+
+---
+
+## 3. Company Profile APIs  
+
+Company types:
+
+```json
+{
+ "type": "full_construction | partial_construction | material_supplier"
+}
+```
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/companies | GET | Query: type, city, rating, category | JSON: list of companies |
+| /api/companies/:id | GET | Path parameter: company id | JSON: company profile |
+| /api/companies/profile | POST | JSON: company name, type, description, location | JSON: created company profile |
+| /api/companies/profile | PUT | JSON: updated company information | JSON: updated profile |
+| /api/companies/profile | DELETE | Header: token | JSON: profile deleted message |
+
+---
+
+## 4. Services APIs  
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/services | GET | Query: companyId, type, category | JSON: list of services |
+| /api/services/:id | GET | Path parameter: service id | JSON: service details |
+| /api/services | POST | JSON: title, description, priceRange, companyId | JSON: created service |
+| /api/services/:id | PUT | JSON: updated service data | JSON: updated service |
+| /api/services/:id | DELETE | Path parameter: service id | JSON: deleted message |
+
+---
+
+## 5. Booking APIs  
+
+Status example:
+
+```json
+{
+ "status": "pending | accepted | rejected"
+}
+```
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/bookings | POST | JSON: serviceId, companyId, appointmentDate, notes | JSON: booking request |
+| /api/bookings | GET | Header: token | JSON: user bookings |
+| /api/bookings/:id | GET | Path parameter: booking id | JSON: booking details |
+| /api/bookings/:id/status | PUT | JSON: status | JSON: updated booking status |
+
+---
+
+## 6. Project Tracking APIs  
+
+Project update example:
+
+```json
+{
+ "comment": "Foundation work has been completed.",
+ "images": ["image_url_1", "image_url_2"],
+ "progressPercentage": 40
+}
+```
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/projects | GET | Header: token | JSON: list of user projects |
+| /api/projects/:id | GET | Path parameter: project id | JSON: project details |
+| /api/projects/:id/status | PUT | JSON: status, progressPercentage | JSON: updated project status |
+| /api/projects/:id/updates | POST | JSON: comment, images | JSON: new project update |
+| /api/projects/:id/updates | GET | Path parameter: project id | JSON: list of project updates |
+
+---
+
+## 7. Product APIs  
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/products | GET | Query: supplierId, category, price | JSON: list of products |
+| /api/products/:id | GET | Path parameter: product id | JSON: product details |
+| /api/products | POST | JSON: name, description, price, quantity, category | JSON: created product |
+| /api/products/:id | PUT | JSON: updated product data | JSON: updated product |
+| /api/products/:id | DELETE | Path parameter: product id | JSON: deleted message |
+
+---
+
+## 8. Cart APIs  
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/cart | GET | Header: token | JSON: cart items |
+| /api/cart/items | POST | JSON: productId, quantity | JSON: added cart item |
+| /api/cart/items/:id | PUT | JSON: quantity | JSON: updated cart item |
+| /api/cart/items/:id | DELETE | Path parameter: cart item id | JSON: removed message |
+
+---
+
+## 9. Order APIs  
+
+Order status example:
+
+```json
+{
+ "status": "pending | processing | delivered | cancelled"
+}
+```
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/orders | POST | JSON: cartId, deliveryAddress | JSON: created order |
+| /api/orders | GET | Header: token | JSON: user orders |
+| /api/orders/:id | GET | Path parameter: order id | JSON: order details |
+| /api/orders/:id/status | PUT | JSON: status | JSON: updated order status |
+
+---
+
+## 10. Invoice APIs  
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/invoices/:orderId | GET | Path parameter: order id | JSON: invoice details |
+| /api/invoices/:orderId/send | POST | JSON: email | JSON: invoice sent message |
+
+---
+
+## 11. Review APIs  
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/reviews | POST | JSON: companyId, rating, comment | JSON: created review |
+| /api/reviews/company/:companyId | GET | Path parameter: company id | JSON: company reviews |
+| /api/reviews/:id | PUT | JSON: rating, comment | JSON: updated review |
+| /api/reviews/:id | DELETE | Path parameter: review id | JSON: deleted message |
+| /api/reviews/:id/reply | POST | JSON: reply | JSON: company reply |
+
+---
+
+## 12. Notification APIs  
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/notifications/booking-confirmation | POST | JSON: bookingId, email | JSON: email sent message |
+| /api/notifications/order-confirmation | POST | JSON: orderId, email | JSON: email sent message |
+| /api/notifications/invoice | POST | JSON: invoiceId, email | JSON: invoice email sent |
+
+---
+
+## 13. File Upload APIs  
+
+Example JSON Response:
+
+```json
+{
+ "success": true,
+ "message": "Request completed successfully",
+ "data": {
+   "id": 1,
+   "status": "accepted"
+ }
+}
+```
+
+| URL Path | Method | Input Format | Output Format |
+|----------|--------|--------------|---------------|
+| /api/files/upload | POST | FormData: image/document file | JSON: file URL |
+| /api/files/project/:projectId | GET | Path parameter: project id | JSON: project files |
+
+
+
+# SCM and QA Plans
+
+**SCM Strategy:** The project will use Git as the version control system and GitHub as the remote repository.
+
+---
+
+## Branching Strategy
+
+| Branch      | Purpose |
+|------------|--------|
+| main        | Stores the final stable version of the project. |
+| development | Stores completed features before they are moved to the final version. |
+| feature/*   | Used to work on new features separately. |
+| bugfix/*    | Used to fix errors or bugs. |
+
+---
+
+## Regular Commits, Code Reviews, and Pull Requests
+
+The team will commit changes regularly with clear messages to track progress and make it easier to understand what has changed.
+
+Before adding any feature to the main project, the developer will create a Pull Request on GitHub. Another team member will review the code to check for errors, readability, and whether the feature works correctly.
+
+After the code is reviewed and approved, it will be merged into the development branch.
+
+---
+
+## Examples of commit messages:
+
+- Add client login page  
+- Create booking API endpoint  
+- Fix order status update  
+
+---
+
+# QA Strategy
+
+## Testing Strategy
+
+| Testing Type        | Purpose                                   | Example |
+|--------------------|-------------------------------------------|--------|
+| Unit Testing        | Tests small parts of the system separately. | Test login validation. |
+| Integration Testing | Tests how different parts work together.   | Test booking API with the database. |
+| API Testing         | Tests the backend endpoints.               | Test /api/bookings using Postman. |
+| UI Testing          | Tests the user interface manually.         | Test login, booking, cart, and dashboard pages |
+
+---
+
+## Testing Tools
+
+| Tool                   | Purpose |
+|------------------------|--------|
+| Jest                   | Used for unit testing JavaScript and Node.js code. |
+| Postman                | Used for testing API endpoints manually. |
+| React Testing Library  | Used for testing React components. |
+| GitHub Actions         | Used to run automated tests before merging code. |
+
+---
+
+## Deployment Pipeline
+
+The project will use two environments: staging and production.
+
+- Staging is used to test the system before releasing it to real users.  
+- Production is the final live version of the system  
+
+---
+
+## Deployment Steps
+
+1. The developer pushes the code to GitHub.  
+2. A Pull Request is created.  
+3. The code is reviewed by another team member.  
+4. Tests are run using GitHub Actions.  
+5. If the tests pass, the code is merged into the development branch.  
+6. The system is deployed to staging for testing.  
+7. If everything works correctly in staging, the code is merged into the main branch.  
+8. The system is deployed to production.  
