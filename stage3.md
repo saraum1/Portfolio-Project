@@ -233,3 +233,180 @@ flowchart LR
     BE --> Invoice
 
     Notify --> Client 
+
+## Components, Classes, and Database Design
+
+### Components Description
+
+**Front-End:** The front-end is the part of the system that users interact with. It allows clients and companies to use the platform, such as browsing companies, booking services, placing orders, and managing their profiles. It sends requests to the back end and displays the returned data to the users.
+
+**Back-End:** The back end is responsible for handling the main logic of the system. It processes requests coming from the front-end, such as login, bookings, orders, and reviews. It also connects with the database, notification service, and file storage to manage the system operations.
+
+**Database:** The database stores all the data in the system, including users, companies, services, bookings, projects, products, orders, invoices, and reviews. It keeps the data organized and ensures relationships between different parts of the system.
+
+**Notification Service:** The notification service is used to send emails to users. It handles sending booking confirmations, order confirmations, and invoice emails. It is separated from the main system to keep the design simple and scalable.
+
+**File Storage Service:** This component is used to store and manage images related to projects. Companies can upload images to show project progress, and the system provides links to display these images on the front end.
+
+**Invoice Generator:** The invoice generator is responsible for creating invoices for material orders. It generates invoice details based on the order and sends them through the notification service. It works independently from payment processing, since payments are handled outside the system.
+
+---
+
+### Classes Description
+
+**User:** The user represents a general account in the system. It stores basic information such as name, email, password, and role. It is used as a base for both clients and companies.
+
+**Client:** The client represents a user who uses the platform to request services or order materials. The client can browse companies, book services, place orders, track progress, and write reviews.
+
+**Company:** The company represents service providers and material suppliers. It stores company information such as type, description, and rating, and allows managing services or products.
+
+**Service:** The service represents a construction service offered by companies. It includes details such as title, description, and price range.
+
+**Booking:** The booking represents a service reservation made by a client. It stores the appointment date and booking status, such as pending or accepted.
+
+**Project:** The project represents the work created after a booking is accepted. It is used to track the overall progress of the construction.
+
+**Project Update:** the project update represents updates added to a project. It includes comments and images that show the progress of the work.
+
+**Product:** The product represents materials provided by suppliers. It includes product information such as name, price, and available quantity.
+
+**Cart:** The cart represents a temporary list of selected products before placing an order. It allows adding and managing items.
+
+**Order:** The order represents a material purchase made by a client. It stores order details and tracks its status.
+
+**Order Item:** The order item represents a specific product inside an order. It includes quantity and price for each product.
+
+**Invoice:** The invoice represents a record created after placing an order. It includes the total amount and serves as a reference for the client.
+
+**Review:** The review represents feedback given by a client to a company. It includes a rating and a comment.
+
+**Notification Service:** The notification service is responsible for sending emails such as booking confirmations, order confirmations, and invoices.
+
+**FileStorageService:** The file storage service is used to upload and store images related to projects. It provides links to display these images in the system.
+
+## Class Diagram
+
+```mermaid
+classDiagram
+
+class User {
+  +int userId
+  +string name
+  +string email
+  +string passwordHash
+  +string role
+}
+
+class Client {
+  +int clientId
+  +string phoneNumber
+  +string address
+}
+
+class Company {
+  +int companyId
+  +string companyName
+  +string ownerName
+  +string commercialRegistration
+  +string vatNumber
+  +string establishmentNumber
+  +string description
+  +string companyType
+}
+
+class Service {
+  +int serviceId
+  +string title
+  +string description
+  +string priceRange
+}
+
+class Product {
+  +int productId
+  +string name
+  +string description
+  +float price
+  +int stockQuantity
+}
+
+class Booking {
+  +int bookingId
+  +date appointmentDate
+  +string status
+}
+
+class Project {
+  +int projectId
+  +string status
+}
+
+class ProjectUpdate {
+  +int updateId
+  +string comment
+  +string imageUrl
+}
+
+class Cart {
+  +int cartId
+}
+
+class Order {
+  +int orderId
+  +string status
+}
+
+class OrderItem {
+  +int orderItemId
+  +int quantity
+  +float unitPrice
+}
+
+class Invoice {
+  +int invoiceId
+  +float totalAmount
+}
+
+class Review {
+  +int reviewId
+  +int rating
+  +string comment
+}
+
+class NotificationService {
+  +sendBookingConfirmation()
+  +sendOrderConfirmation()
+  +sendInvoiceEmail()
+}
+
+class FileStorageService {
+  +uploadImage()
+  +getImageUrl()
+}
+
+User <|-- Client
+User <|-- Company
+
+Company "1" --> "0..*" Service : offers
+Company "1" --> "0..*" Product : sells
+
+Client "1" --> "0..*" Booking : makes
+Service "1" --> "0..*" Booking : bookedFor
+
+Booking "1" --> "0..1" Project : creates
+Project "1" --> "0..*" ProjectUpdate : has
+
+Client "1" --> "1" Cart : owns
+Cart "1" --> "0..*" OrderItem : contains
+Product "1" --> "0..*" OrderItem : usedIn
+
+Client "1" --> "0..*" Order : places
+Order "1" --> "1..*" OrderItem : includes
+Order "1" --> "1" Invoice : generates
+
+Client "1" --> "0..*" Review : writes
+Company "1" --> "0..*" Review : receives
+
+Booking ..> NotificationService : triggersEmail
+Order ..> NotificationService : triggersEmail
+Invoice ..> NotificationService : sendsInvoice
+ProjectUpdate ..> FileStorageService : storesImage
