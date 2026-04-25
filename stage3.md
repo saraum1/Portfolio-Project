@@ -233,7 +233,7 @@ flowchart LR
     BE --> Invoice
 
     Notify --> Client 
-
+```
 ## Components, Classes, and Database Design
 
 ### Components Description
