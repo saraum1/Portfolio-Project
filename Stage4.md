@@ -428,3 +428,16 @@ The MVP was successfully prepared for final delivery after completing the integr
 | Browser DevTools | Responsive testing and frontend debugging |
 | PostgreSQL | Database verification and query testing |
 | GitHub | Version tracking and bug fix management |
+
+---
+
+# Deliverables and Project Links
+
+## GitHub Repository
+https://github.com/rateelbahathiq/ammar-platform
+
+## Deployed Website
+https://ammar-lqxr.vercel.app/
+
+## Testing Evidence and Results
+https://drive.google.com/drive/folders/1eU12LTZzROdLBX_oVPlync-2xiB_eDt1
